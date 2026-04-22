@@ -21,7 +21,7 @@ const pageBuilderService = getPageBuilder()
 /**
  * Props for PageBuilder component
  * @typedef {Object} Props
- * @property {Object|null} CustomMediaLibraryComponent - Custom media component
+ * @property {Object|null} CustomMennpdiaLibraryComponent - Custom media component
  * @property {Object|null} CustomBuilderComponents - Custom component
  * @property {Object} configPageBuilder - Configuration object containing:
  */
@@ -1014,6 +1014,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+
       <!-- Left Menu End -->
 
       <main
