@@ -512,6 +512,137 @@ const component: Components[] = [
 </svg>
                     `,
         },
+                           // New components added 
+
+                //Hero section 
+        {
+          title: 'Hero Split Spotlight',
+          html_code: `<section><div class="md:pbx-pt-20 md:pbx-pb-20 pbx-pt-8 pbx-pb-8 lg:pbx-px-4 pbx-px-2"><div class="pbx-mx-auto pbx-max-w-7xl"><div class="pbx-grid pbx-grid-cols-1 lg:pbx-grid-cols-2 pbx-gap-8 lg:pbx-gap-12 pbx-items-center"><div><div class="pbx-inline-flex pbx-items-center pbx-gap-2 pbx-rounded-full pbx-border pbx-border-gray-300 pbx-px-4 pbx-py-2 pbx-text-sm pbx-font-medium"><p>New landing page block</p></div><div class="pbx-mt-6 pbx-break-words pbx-text-4xl md:pbx-text-5xl lg:pbx-text-7xl pbx-font-medium pbx-leading-tight"><h2>Build a polished page with blocks that already look consistent.</h2></div><div class="pbx-mt-6 pbx-max-w-2xl pbx-text-base md:pbx-text-lg pbx-text-gray-600"><p>Start customizing by editing this default text directly in the editor. Change the message, swap the image, and adjust spacing, colors, and typography from the sidebar.</p></div><div class="pbx-mt-8 pbx-flex pbx-flex-col sm:pbx-flex-row pbx-gap-4"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com" class="pbx-inline-flex pbx-items-center pbx-justify-center pbx-rounded-full pbx-bg-gray-900 pbx-text-white pbx-px-6 pbx-py-3 pbx-font-medium">Start now</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com" class="pbx-inline-flex pbx-items-center pbx-justify-center pbx-rounded-full pbx-border pbx-border-gray-300 pbx-px-6 pbx-py-3 pbx-font-medium">See details</a></div><div class="pbx-mt-10 pbx-grid pbx-grid-cols-2 sm:pbx-grid-cols-3 pbx-gap-4"><div class="pbx-rounded-2xl pbx-border pbx-border-gray-200 pbx-p-4"><p class="pbx-text-sm pbx-text-gray-500">Pages launched</p><p class="pbx-mt-2 pbx-text-2xl pbx-font-semibold">120+</p></div><div class="pbx-rounded-2xl pbx-border pbx-border-gray-200 pbx-p-4"><p class="pbx-text-sm pbx-text-gray-500">Reusable blocks</p><p class="pbx-mt-2 pbx-text-2xl pbx-font-semibold">40</p></div><div class="pbx-rounded-2xl pbx-border pbx-border-gray-200 pbx-p-4 pbx-col-span-2 sm:pbx-col-span-1"><p class="pbx-text-sm pbx-text-gray-500">Time to publish</p><p class="pbx-mt-2 pbx-text-2xl pbx-font-semibold">Same day</p></div></div></div><div><div class="pbx-relative"><div class="pbx-absolute pbx-inset-0 pbx-rounded-[2rem] pbx-bg-gray-100"></div><div class="pbx-relative pbx-rounded-[2rem] pbx-overflow-hidden pbx-border pbx-border-gray-200 pbx-bg-white pbx-shadow-sm"><img class="pbx-w-full pbx-aspect-[4/5] lg:pbx-aspect-[4/4.6] pbx-object-cover" src="${getPlaceholderImageDataUrl()}" alt="hero visual"><div class="pbx-grid pbx-grid-cols-2 pbx-gap-3 pbx-p-4 md:pbx-p-6 pbx-bg-white"><div class="pbx-rounded-2xl pbx-bg-gray-100 pbx-p-4"><p class="pbx-text-sm pbx-text-gray-500">Primary benefit</p><p class="pbx-mt-2 pbx-font-medium">Blocks stay responsive across screens.</p></div><div class="pbx-rounded-2xl pbx-bg-gray-100 pbx-p-4"><p class="pbx-text-sm pbx-text-gray-500">Editing support</p><p class="pbx-mt-2 pbx-font-medium">Text, image, padding, color, font size.</p></div></div></div></div></div></div></div></section>`,
+          category: 'Landing Page',
+          cover_image: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220">
+  <rect fill="#394152" x="0" y="18" width="145" height="10"/>
+  <rect fill="#394152" x="0" y="42" width="165" height="10"/>
+  <rect fill="#394152" x="0" y="66" width="135" height="10"/>
+  <rect fill="#394152" x="0" y="104" width="120" height="6"/>
+  <rect fill="#394152" x="0" y="118" width="150" height="6"/>
+  <rect fill="#394152" x="0" y="150" rx="14" ry="14" width="88" height="26"/>
+  <rect fill="#BFC7D5" x="98" y="150" rx="14" ry="14" width="88" height="26"/>
+  <rect fill="#E5E7EB" x="0" y="188" rx="12" ry="12" width="52" height="28"/>
+  <rect fill="#E5E7EB" x="60" y="188" rx="12" ry="12" width="52" height="28"/>
+  <rect fill="#E5E7EB" x="120" y="188" rx="12" ry="12" width="52" height="28"/>
+  <rect fill="#F3F4F6" x="215" y="0" rx="24" ry="24" width="145" height="220"/>
+  <rect fill="#FFFFFF" x="228" y="14" rx="20" ry="20" width="119" height="142"/>
+  <rect fill="#394152" x="242" y="28" width="91" height="90"/>
+  <polygon fill="#718096" points="256,94 278,66 300,94"/>
+  <polygon fill="#718096" points="292,94 305,78 318,94"/>
+  <circle fill="#718096" cx="305" cy="59" r="5"/>
+  <rect fill="#E5E7EB" x="238" y="168" rx="12" ry="12" width="50" height="36"/>
+  <rect fill="#E5E7EB" x="296" y="168" rx="12" ry="12" width="50" height="36"/>
+</svg>
+                    `,
+        },
+             //Features section starts here 
+
+
+        {
+          title: 'Features Grid Cards',
+          html_code: `<section><div class="md:pbx-pt-16 md:pbx-pb-16 pbx-pt-8 pbx-pb-8 lg:pbx-px-4 pbx-px-2"><div class="pbx-mx-auto pbx-max-w-7xl"><div class="pbx-max-w-3xl"><div class="pbx-break-words pbx-text-3xl md:pbx-text-4xl lg:pbx-text-5xl pbx-font-medium"><h2>Feature blocks that explain the value of the page at a glance.</h2></div><div class="pbx-mt-4 pbx-text-base md:pbx-text-lg pbx-text-gray-600"><p>Use this section for product features, service highlights, or anything that needs three clean points with consistent spacing and typography.</p></div></div><div class="pbx-mt-10 pbx-grid pbx-grid-cols-1 md:pbx-grid-cols-2 xl:pbx-grid-cols-3 pbx-gap-5"><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-flex pbx-h-12 pbx-w-12 pbx-items-center pbx-justify-center pbx-rounded-2xl pbx-bg-gray-900 pbx-text-white"><span class="material-symbols-outlined">dashboard</span></div><div class="pbx-mt-6 pbx-break-words pbx-text-2xl pbx-font-medium"><h3>Structured editing</h3></div><div class="pbx-mt-3 pbx-text-gray-600"><p>Users can update headings, paragraphs, buttons, and imagery without breaking the layout.</p></div></div><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-flex pbx-h-12 pbx-w-12 pbx-items-center pbx-justify-center pbx-rounded-2xl pbx-bg-gray-900 pbx-text-white"><span class="material-symbols-outlined">devices</span></div><div class="pbx-mt-6 pbx-break-words pbx-text-2xl pbx-font-medium"><h3>Responsive by default</h3></div><div class="pbx-mt-3 pbx-text-gray-600"><p>The grid collapses cleanly across mobile, tablet, and desktop so the content remains readable everywhere.</p></div></div><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-flex pbx-h-12 pbx-w-12 pbx-items-center pbx-justify-center pbx-rounded-2xl pbx-bg-gray-900 pbx-text-white"><span class="material-symbols-outlined">tune</span></div><div class="pbx-mt-6 pbx-break-words pbx-text-2xl pbx-font-medium"><h3>Design controls</h3></div><div class="pbx-mt-3 pbx-text-gray-600"><p>Padding, colors, font size, and other visual settings can be adjusted to match the rest of the page.</p></div></div></div></div></div></section>`,
+          category: 'Landing Page',
+          cover_image: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200">
+  <rect fill="#394152" x="0" y="0" width="190" height="10"/>
+  <rect fill="#394152" x="0" y="24" width="230" height="8"/>
+  <rect fill="#394152" x="0" y="40" width="210" height="8"/>
+  <rect fill="#F3F4F6" x="0" y="78" rx="18" ry="18" width="108" height="118"/>
+  <rect fill="#F3F4F6" x="126" y="78" rx="18" ry="18" width="108" height="118"/>
+  <rect fill="#F3F4F6" x="252" y="78" rx="18" ry="18" width="108" height="118"/>
+  <rect fill="#394152" x="20" y="98" rx="12" ry="12" width="28" height="28"/>
+  <rect fill="#394152" x="146" y="98" rx="12" ry="12" width="28" height="28"/>
+  <rect fill="#394152" x="272" y="98" rx="12" ry="12" width="28" height="28"/>
+  <rect fill="#394152" x="20" y="138" width="68" height="7"/>
+  <rect fill="#394152" x="20" y="154" width="54" height="5"/>
+  <rect fill="#394152" x="20" y="166" width="60" height="5"/>
+  <rect fill="#394152" x="146" y="138" width="68" height="7"/>
+  <rect fill="#394152" x="146" y="154" width="54" height="5"/>
+  <rect fill="#394152" x="146" y="166" width="60" height="5"/>
+  <rect fill="#394152" x="272" y="138" width="68" height="7"/>
+  <rect fill="#394152" x="272" y="154" width="54" height="5"/>
+  <rect fill="#394152" x="272" y="166" width="60" height="5"/>
+</svg>
+                    `,
+        },
+
+        // Testimonial section 
+
+        {
+          title: 'Testimonials Three Column',
+          html_code: `<section>
+          <div class="md:pbx-pt-16 md:pbx-pb-16 pbx-pt-8 pbx-pb-8 lg:pbx-px-4 pbx-px-2">
+          <div class="pbx-mx-auto pbx-max-w-7xl">
+          <div class="pbx-max-w-3xl"><div class="pbx-break-words pbx-text-3xl md:pbx-text-4xl lg:pbx-text-5xl pbx-font-medium"><h2>Social proof that feels at home with the rest of the builder.</h2></div><div class="pbx-mt-4 pbx-text-base md:pbx-text-lg pbx-text-gray-600"><p>Use testimonials to add trust, customer voice, and a clear sense of real-world results.</p></div></div><div class="pbx-mt-10 pbx-grid pbx-grid-cols-1 md:pbx-grid-cols-2 xl:pbx-grid-cols-3 pbx-gap-5"><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-text-4xl pbx-leading-none pbx-font-medium"><p>"</p></div><div class="pbx-mt-4 pbx-text-gray-700"><p>Start customizing by editing this default text directly in the editor. This layout stays balanced even when the quote grows a little longer.</p></div><div class="pbx-mt-6 pbx-flex pbx-items-center pbx-gap-4"><img class="pbx-h-14 pbx-w-14 pbx-rounded-full pbx-object-cover" src="${getPlaceholderImageDataUrl()}" alt="testimonial person"><div><p class="pbx-font-medium">Sarah Johnson</p><p class="pbx-text-sm pbx-text-gray-500">Marketing Lead</p></div></div></div><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-text-4xl pbx-leading-none pbx-font-medium"><p>"</p></div><div class="pbx-mt-4 pbx-text-gray-700"><p>Start customizing by editing this default text directly in the editor. Teams can replace the image, update the name, and fine-tune styling from the sidebar.</p></div><div class="pbx-mt-6 pbx-flex pbx-items-center pbx-gap-4"><img class="pbx-h-14 pbx-w-14 pbx-rounded-full pbx-object-cover" src="${getPlaceholderImageDataUrl()}" alt="testimonial person"><div><p class="pbx-font-medium">Daniel Rivera</p><p class="pbx-text-sm pbx-text-gray-500">Product Manager</p></div></div></div><div class="pbx-rounded-3xl pbx-border pbx-border-gray-200 pbx-bg-white pbx-p-6"><div class="pbx-text-4xl pbx-leading-none pbx-font-medium"><p>"</p></div><div class="pbx-mt-4 pbx-text-gray-700"><p>Start customizing by editing this default text directly in the editor. It gives the page a more complete marketing flow after features and before the footer.</p></div><div class="pbx-mt-6 pbx-flex pbx-items-center pbx-gap-4"><img class="pbx-h-14 pbx-w-14 pbx-rounded-full pbx-object-cover" src="${getPlaceholderImageDataUrl()}" alt="testimonial person"><div><p class="pbx-font-medium">Amina Patel</p><p class="pbx-text-sm pbx-text-gray-500">Founder</p></div></div></div></div></div></div></section>`,
+          category: 'Landing Page',
+          cover_image: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200">
+  <rect fill="#394152" x="0" y="0" width="204" height="10"/>
+  <rect fill="#394152" x="0" y="24" width="170" height="8"/>
+  <rect fill="#F3F4F6" x="0" y="64" rx="18" ry="18" width="108" height="136"/>
+  <rect fill="#F3F4F6" x="126" y="64" rx="18" ry="18" width="108" height="136"/>
+  <rect fill="#F3F4F6" x="252" y="64" rx="18" ry="18" width="108" height="136"/>
+  <rect fill="#394152" x="18" y="86" width="10" height="10"/>
+  <rect fill="#394152" x="144" y="86" width="10" height="10"/>
+  <rect fill="#394152" x="270" y="86" width="10" height="10"/>
+  <rect fill="#394152" x="18" y="108" width="72" height="6"/>
+  <rect fill="#394152" x="18" y="122" width="66" height="6"/>
+  <rect fill="#394152" x="18" y="136" width="58" height="6"/>
+  <rect fill="#394152" x="144" y="108" width="72" height="6"/>
+  <rect fill="#394152" x="144" y="122" width="66" height="6"/>
+  <rect fill="#394152" x="144" y="136" width="58" height="6"/>
+  <rect fill="#394152" x="270" y="108" width="72" height="6"/>
+  <rect fill="#394152" x="270" y="122" width="66" height="6"/>
+  <rect fill="#394152" x="270" y="136" width="58" height="6"/>
+  <circle fill="#BFC7D5" cx="30" cy="172" r="14"/>
+  <circle fill="#BFC7D5" cx="156" cy="172" r="14"/>
+  <circle fill="#BFC7D5" cx="282" cy="172" r="14"/>
+  <rect fill="#394152" x="52" y="166" width="36" height="6"/>
+  <rect fill="#394152" x="178" y="166" width="36" height="6"/>
+  <rect fill="#394152" x="304" y="166" width="36" height="6"/>
+</svg>
+                    `,
+        },
+
+        // Footer section
+        {
+          title: 'Footer Multi Column',
+          html_code: `<section><div class="md:pbx-pt-16 md:pbx-pb-10 pbx-pt-8 pbx-pb-8 lg:pbx-px-4 pbx-px-2 pbx-bg-gray-50"><div class="pbx-mx-auto pbx-max-w-7xl"><div class="pbx-grid pbx-grid-cols-1 md:pbx-grid-cols-2 xl:pbx-grid-cols-4 pbx-gap-8 pbx-border-b pbx-border-gray-200 pbx-pb-10"><div><div class="pbx-flex pbx-items-center pbx-gap-3"><img class="pbx-h-12 pbx-w-12 pbx-rounded-2xl pbx-object-cover" src="${getPlaceholderImageDataUrl()}" alt="brand logo"><div class="pbx-break-words pbx-text-xl pbx-font-medium"><p>My Brand</p></div></div><div class="pbx-mt-4 pbx-text-gray-600"><p>Start customizing by editing this default text directly in the editor. Use this space for a short brand summary or support message.</p></div></div><div><div class="pbx-break-words pbx-text-lg pbx-font-medium"><p>Product</p></div><div class="pbx-mt-4 pbx-flex pbx-flex-col pbx-gap-3"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Features</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Templates</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Pricing</a></div></div><div><div class="pbx-break-words pbx-text-lg pbx-font-medium"><p>Company</p></div><div class="pbx-mt-4 pbx-flex pbx-flex-col pbx-gap-3"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">About</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Careers</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Contact</a></div></div><div><div class="pbx-break-words pbx-text-lg pbx-font-medium"><p>Newsletter</p></div><div class="pbx-mt-4 pbx-text-gray-600"><p>Use this space for updates, support notes, or any closing message you want at the bottom of the page.</p></div><div class="pbx-mt-5 pbx-flex pbx-flex-col sm:pbx-flex-row pbx-gap-3"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com" class="pbx-inline-flex pbx-items-center pbx-justify-center pbx-rounded-full pbx-bg-gray-900 pbx-text-white pbx-px-5 pbx-py-3 pbx-font-medium">Subscribe</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com" class="pbx-inline-flex pbx-items-center pbx-justify-center pbx-rounded-full pbx-border pbx-border-gray-300 pbx-px-5 pbx-py-3 pbx-font-medium">Support</a></div></div></div><div class="pbx-flex pbx-flex-col md:pbx-flex-row pbx-gap-4 md:pbx-items-center md:pbx-justify-between pbx-pt-6 pbx-text-sm pbx-text-gray-500"><p>Copyright 2026 My Brand. All rights reserved.</p><div class="pbx-flex pbx-flex-wrap pbx-gap-4"><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Privacy</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">Terms</a><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com">LinkedIn</a></div></div></div></div></section>`,
+          category: 'Landing Page',
+          cover_image: `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 160">
+  <rect fill="#F3F4F6" x="0" y="0" width="360" height="160"/>
+  <circle fill="#BFC7D5" cx="24" cy="28" r="12"/>
+  <rect fill="#394152" x="44" y="22" width="70" height="8"/>
+  <rect fill="#394152" x="0" y="52" width="78" height="6"/>
+  <rect fill="#394152" x="0" y="66" width="92" height="6"/>
+  <rect fill="#394152" x="132" y="20" width="60" height="8"/>
+  <rect fill="#394152" x="132" y="48" width="48" height="6"/>
+  <rect fill="#394152" x="132" y="62" width="42" height="6"/>
+  <rect fill="#394152" x="132" y="76" width="38" height="6"/>
+  <rect fill="#394152" x="214" y="20" width="60" height="8"/>
+  <rect fill="#394152" x="214" y="48" width="48" height="6"/>
+  <rect fill="#394152" x="214" y="62" width="42" height="6"/>
+  <rect fill="#394152" x="214" y="76" width="38" height="6"/>
+  <rect fill="#394152" x="292" y="20" width="68" height="8"/>
+  <rect fill="#394152" x="292" y="48" width="52" height="6"/>
+  <rect fill="#394152" x="292" y="62" width="58" height="6"/>
+  <rect fill="#394152" x="292" y="90" rx="12" ry="12" width="68" height="22"/>
+  <line x1="0" y1="126" x2="360" y2="126" stroke="#D1D5DB" stroke-width="2"/>
+  <rect fill="#394152" x="0" y="140" width="110" height="6"/>
+  <rect fill="#394152" x="246" y="140" width="32" height="6"/>
+  <rect fill="#394152" x="288" y="140" width="32" height="6"/>
+  <rect fill="#394152" x="330" y="140" width="30" height="6"/>
+</svg>
+                    `,
+        },
       ],
     },
   },
