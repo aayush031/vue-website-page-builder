@@ -1,8 +1,7 @@
 <script setup>
-import Unsplash from './DemoUnsplash.vue'
+import MediaLibraryBrowser from '../../Components/Modals/MediaLibraryBrowser.vue'
 </script>
+
 <template>
-  <div>
-    <Unsplash />
-  </div>
+  <MediaLibraryBrowser />
 </template>

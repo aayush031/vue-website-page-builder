@@ -2384,23 +2384,138 @@ export class PageBuilderService {
     return false
   }
 
+  public getSelectedMediaTarget():
+    | HTMLImageElement
+    | HTMLVideoElement
+    | HTMLIFrameElement
+    | null {
+    const currentElement = this.getElement.value
+    if (!currentElement) return null
+
+    if (
+      currentElement instanceof HTMLImageElement ||
+      currentElement instanceof HTMLVideoElement ||
+      currentElement instanceof HTMLIFrameElement
+    ) {
+      return currentElement
+    }
+
+    const directChild = currentElement.firstElementChild
+    if (
+      directChild instanceof HTMLImageElement ||
+      directChild instanceof HTMLVideoElement ||
+      directChild instanceof HTMLIFrameElement
+    ) {
+      return directChild
+    }
+
+    const nestedMedia = currentElement.querySelector('img, video, iframe')
+    if (
+      nestedMedia instanceof HTMLImageElement ||
+      nestedMedia instanceof HTMLVideoElement ||
+      nestedMedia instanceof HTMLIFrameElement
+    ) {
+      return nestedMedia
+    }
+
+    return null
+  }
+
+  public getSelectedMediaType(): 'image' | 'video' | 'embed' | null {
+    const mediaTarget = this.getSelectedMediaTarget()
+    if (!mediaTarget) return null
+
+    if (mediaTarget instanceof HTMLImageElement) return 'image'
+    if (mediaTarget instanceof HTMLVideoElement) return 'video'
+    if (mediaTarget instanceof HTMLIFrameElement) return 'embed'
+
+    return null
+  }
+
+  public getSelectedMediaSource(): string | null {
+    const mediaTarget = this.getSelectedMediaTarget()
+    if (!mediaTarget) return null
+
+    return mediaTarget.getAttribute('src') || null
+  }
+
+  public hasSelectedMediaTarget(): boolean {
+    return this.getSelectedMediaTarget() !== null
+  }
+
+  private normalizeEmbedSource(src: string): string {
+    if (!src || typeof src !== 'string') return src
+
+    try {
+      const url = new URL(src)
+
+      if (
+        (url.hostname === 'www.youtube.com' || url.hostname === 'youtube.com') &&
+        url.pathname === '/watch' &&
+        url.searchParams.get('v')
+      ) {
+        return `https://www.youtube.com/embed/${url.searchParams.get('v')}`
+      }
+
+      if (url.hostname === 'youtu.be') {
+        const videoId = url.pathname.replace('/', '')
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}`
+        }
+      }
+
+      return src
+    } catch {
+      return src
+    }
+  }
+
+  public async applySelectedMedia(media: ImageObject): Promise<void> {
+    this.pageBuilderStateStore.setApplyImageToSelection(media)
+
+    const mediaTarget = this.getSelectedMediaTarget()
+    if (!mediaTarget) return
+
+    if (!this.getApplyImageToSelection.value || !this.getApplyImageToSelection.value.src) return
+
+    let nextSource = this.getApplyImageToSelection.value.src
+
+    if (mediaTarget instanceof HTMLIFrameElement) {
+      nextSource = this.normalizeEmbedSource(nextSource)
+    }
+
+    await nextTick()
+    mediaTarget.setAttribute('src', nextSource)
+
+    if (mediaTarget instanceof HTMLImageElement) {
+      mediaTarget.src = nextSource
+      mediaTarget.removeAttribute('srcset')
+    }
+
+    if (mediaTarget instanceof HTMLVideoElement) {
+      mediaTarget.src = nextSource
+    }
+
+    if (mediaTarget instanceof HTMLIFrameElement) {
+      mediaTarget.src = nextSource
+    }
+
+    this.pageBuilderStateStore.setBasePrimaryImage(nextSource)
+
+    if (mediaTarget instanceof HTMLVideoElement) {
+      mediaTarget.load()
+    }
+
+    await this.handleAutoSave()
+  }
+
   /**
    * Applies a selected image to the current element.
    * @param {ImageObject} image - The image object to apply.
    * @returns {Promise<void>}
    */
   public async applySelectedImage(image: ImageObject): Promise<void> {
-    this.pageBuilderStateStore.setApplyImageToSelection(image)
-
-    if (!this.getElement.value) return
-
-    // Only apply if an image is staged
-    if (this.getApplyImageToSelection.value && this.getApplyImageToSelection.value.src) {
-      await nextTick()
-      this.pageBuilderStateStore.setBasePrimaryImage(`${this.getApplyImageToSelection.value.src}`)
-
-      await this.handleAutoSave()
-    }
+    await this.applySelectedMedia(image)
   }
 
   /**
@@ -2408,22 +2523,12 @@ export class PageBuilderService {
    * @private
    */
   private setBasePrimaryImageFromSelectedElement() {
-    if (!this.getElement.value) return
-
-    const currentImageContainer = document.createElement('div')
-    currentImageContainer.innerHTML = this.getElement.value.outerHTML
-
-    // Get all img and div within the current image container
-    const imgElements = currentImageContainer.getElementsByTagName('img')
-    const divElements = currentImageContainer.getElementsByTagName('div')
-
-    // If exactly one img and no div, set as base primary image
-    if (imgElements.length === 1 && divElements.length === 0) {
-      this.pageBuilderStateStore.setBasePrimaryImage(imgElements[0].src)
+    const currentSource = this.getSelectedMediaSource()
+    if (currentSource) {
+      this.pageBuilderStateStore.setBasePrimaryImage(currentSource)
       return
     }
 
-    // Otherwise, clear the base primary image
     this.pageBuilderStateStore.setBasePrimaryImage(null)
   }
 

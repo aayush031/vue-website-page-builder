@@ -449,8 +449,42 @@ export const usePageBuilderStateStore = defineStore('pageBuilderState', {
     },
 
     setBasePrimaryImage(payload: string | null): void {
-      if (this.element) {
-        this.element.src = payload ?? undefined
+      const target =
+        this.element?.tagName === 'IMG' ||
+        this.element?.tagName === 'VIDEO' ||
+        this.element?.tagName === 'IFRAME'
+          ? this.element
+          : this.element?.firstElementChild instanceof HTMLElement &&
+                (this.element.firstElementChild.tagName === 'IMG' ||
+                  this.element.firstElementChild.tagName === 'VIDEO' ||
+                  this.element.firstElementChild.tagName === 'IFRAME')
+            ? this.element.firstElementChild
+            : this.element?.querySelector?.('img, video, iframe') instanceof HTMLElement
+              ? this.element.querySelector('img, video, iframe')
+            : null
+
+      if (
+        target &&
+        (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.tagName === 'IFRAME')
+      ) {
+        target.setAttribute('src', payload ?? '')
+
+        if (target.tagName === 'IMG') {
+          ;(target as HTMLImageElement).src = payload ?? ''
+          target.removeAttribute('srcset')
+        }
+
+        if (target.tagName === 'VIDEO') {
+          ;(target as HTMLVideoElement).src = payload ?? ''
+        }
+
+        if (target.tagName === 'IFRAME') {
+          ;(target as HTMLIFrameElement).src = payload ?? ''
+        }
+
+        if (target.tagName === 'VIDEO' && typeof (target as HTMLVideoElement).load === 'function') {
+          ;(target as HTMLVideoElement).load()
+        }
       }
 
       this.basePrimaryImage = payload
