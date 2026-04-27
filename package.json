@@ -83,6 +83,7 @@
     "@tiptap/starter-kit": "^3.4.2",
     "@tiptap/vue-3": "^3.4.2",
     "pinia": "^2.1.7",
+    "sortablejs": "^1.15.6",
     "uuid": "^9.0.0",
     "vue": "^3.5.13"
   },
@@ -92,6 +93,7 @@
     "@tailwindcss/typography": "^0.5.14",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.14.0",
+    "@types/sortablejs": "^1.15.9",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/eslint-config-prettier": "^10.2.0",

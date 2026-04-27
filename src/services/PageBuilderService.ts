@@ -21,6 +21,7 @@ import tailwindBorderStyleWidthPlusColor from '../utils/builder/tailwind-border-
 import { computed, ref, nextTick } from 'vue'
 import type { ComputedRef } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
+import Sortable from 'sortablejs'
 import { delay } from '../composables/delay'
 import { isEmptyObject } from '../helpers/isEmptyObject'
 import { extractCleanHTMLFromPageBuilder } from '../composables/extractCleanHTMLFromPageBuilder'
@@ -86,6 +87,16 @@ export class PageBuilderService {
     Element,
     { click: EventListener; mouseover: EventListener; mouseleave: EventListener }
   >()
+
+  private sortableInstance: Sortable | null = null
+  private hasAttachedDragListeners = false
+  private dragArmedSectionId: string | null = null
+  private isDragSessionActive = false
+  private dragJustEndedAt = 0
+  private dragTouchTimer: ReturnType<typeof setTimeout> | null = null
+  private dragTouchStartPoint: { x: number; y: number } | null = null
+  private dragTouchSectionCandidate: HTMLElement | null = null
+  private dropIndicatorElement: HTMLElement | null = null
 
   constructor(pageBuilderStateStore: ReturnType<typeof usePageBuilderStateStore>) {
     this.hasStartedEditing = false
@@ -159,6 +170,7 @@ export class PageBuilderService {
   async clearHtmlSelection(): Promise<void> {
     this.pageBuilderStateStore.setComponent(null)
     this.pageBuilderStateStore.setElement(null)
+    this.clearArmedDragState()
     await this.removeHoveredAndSelected()
   }
 
@@ -973,6 +985,264 @@ export class PageBuilderService {
     return !this.NoneListernesTags.includes(el.tagName)
   }
 
+  private getSectionFromEventTarget(target: EventTarget | null): HTMLElement | null {
+    if (!(target instanceof HTMLElement)) return null
+    return target.closest('section[data-componentid]')
+  }
+
+  private getSortableItemByComponentId(componentId: string): HTMLElement | null {
+    const pagebuilder = document.querySelector('#pagebuilder')
+    if (!pagebuilder) return null
+
+    return pagebuilder.querySelector(
+      `div[data-sortable-item="true"][data-componentid="${componentId}"]`,
+    ) as HTMLElement | null
+  }
+
+  private clearDragTouchTimer(): void {
+    if (this.dragTouchTimer) {
+      clearTimeout(this.dragTouchTimer)
+      this.dragTouchTimer = null
+    }
+    this.dragTouchStartPoint = null
+    this.dragTouchSectionCandidate = null
+  }
+
+  private setDragSessionClass(isActive: boolean): void {
+    const pagebuilder = document.querySelector('#pagebuilder')
+    if (!pagebuilder) return
+    pagebuilder.classList.toggle('pbx-drag-session-active', isActive)
+  }
+
+  private clearDropIndicator(): void {
+    if (!this.dropIndicatorElement) return
+    this.dropIndicatorElement.removeAttribute('data-drag-insert')
+    this.dropIndicatorElement = null
+  }
+
+  private updateDropIndicator(relatedElement: HTMLElement | null, willInsertAfter: boolean): void {
+    if (this.dropIndicatorElement && this.dropIndicatorElement !== relatedElement) {
+      this.dropIndicatorElement.removeAttribute('data-drag-insert')
+    }
+
+    if (
+      !relatedElement ||
+      !relatedElement.matches('div[data-sortable-item="true"][data-componentid]')
+    ) {
+      this.dropIndicatorElement = null
+      return
+    }
+
+    relatedElement.setAttribute('data-drag-insert', willInsertAfter ? 'after' : 'before')
+    this.dropIndicatorElement = relatedElement
+  }
+
+  private clearArmedDragState(): void {
+    if (this.dragArmedSectionId) {
+      const armedItem = this.getSortableItemByComponentId(this.dragArmedSectionId)
+      if (armedItem instanceof HTMLElement) {
+        armedItem.removeAttribute('data-drag-armed')
+      }
+    }
+
+    this.dragArmedSectionId = null
+    this.isDragSessionActive = false
+    this.setDragSessionClass(false)
+    this.clearDropIndicator()
+    this.clearDragTouchTimer()
+
+    if (this.sortableInstance) {
+      this.sortableInstance.option('disabled', true)
+      this.sortableInstance.option('draggable', 'div[data-sortable-item="true"]')
+    }
+  }
+
+  private armSectionForDrag(section: HTMLElement): void {
+    const componentId = section.getAttribute('data-componentid')
+    if (!componentId || !this.sortableInstance) return
+
+    const sortableItem = this.getSortableItemByComponentId(componentId)
+    if (!sortableItem) return
+
+    this.clearArmedDragState()
+    sortableItem.setAttribute('data-drag-armed', 'true')
+    this.dragArmedSectionId = componentId
+    this.sortableInstance.option('draggable', 'div[data-sortable-item="true"]')
+    this.sortableInstance.option('disabled', false)
+  }
+
+  private syncComponentOrderFromDOM = async (): Promise<void> => {
+    const pagebuilder = document.querySelector('#pagebuilder')
+    if (!pagebuilder) return
+
+    const componentOrder = Array.from(
+      pagebuilder.querySelectorAll<HTMLElement>('div[data-sortable-item="true"][data-componentid]'),
+    )
+      .map((section) => section.getAttribute('data-componentid'))
+      .filter((id): id is string => Boolean(id))
+
+    if (componentOrder.length === 0) return
+
+    const currentComponents = this.pageBuilderStateStore.getComponents || []
+    const byId = new Map(currentComponents.map((component) => [String(component.id), component]))
+
+    const reordered = componentOrder
+      .map((id) => byId.get(id))
+      .filter((component): component is ComponentObject => Boolean(component))
+
+    currentComponents.forEach((component) => {
+      if (!reordered.some((reorderedComp) => reorderedComp.id === component.id)) {
+        reordered.push(component)
+      }
+    })
+
+    const selectedId = this.getComponent.value?.id || null
+    this.pageBuilderStateStore.setComponents(reordered)
+    await nextTick()
+
+    if (selectedId) {
+      const selectedComponent = reordered.find((component) => component.id === selectedId) || null
+      this.pageBuilderStateStore.setComponent(selectedComponent)
+    }
+
+    await this.addListenersToEditableElements()
+    await this.handleAutoSave()
+  }
+
+  private initializeSectionSortable(pagebuilder: HTMLElement): void {
+    if (this.sortableInstance) return
+
+    this.sortableInstance = Sortable.create(pagebuilder, {
+      draggable: 'div[data-sortable-item="true"]',
+      animation: 180,
+      disabled: true,
+      delayOnTouchOnly: true,
+      delay: 220,
+      touchStartThreshold: 6,
+      scroll: true,
+      bubbleScroll: true,
+      forceAutoScrollFallback: true,
+      scrollSensitivity: 120,
+      scrollSpeed: 18,
+      ghostClass: 'pbx-sortable-ghost',
+      chosenClass: 'pbx-sortable-chosen',
+      dragClass: 'pbx-sortable-drag',
+      onChoose: (evt) => {
+        const draggedSection = evt.item as HTMLElement
+        const draggedId = draggedSection.getAttribute('data-componentid')
+
+        if (!draggedId || !this.dragArmedSectionId || draggedId !== this.dragArmedSectionId) {
+          this.sortableInstance?.option('disabled', true)
+          return
+        }
+
+        this.isDragSessionActive = true
+        this.setDragSessionClass(true)
+      },
+      onMove: (evt) => {
+        const dragged = evt.dragged as HTMLElement | null
+        const related = evt.related as HTMLElement | null
+
+        if (!dragged || !this.dragArmedSectionId) return false
+        if (dragged.getAttribute('data-componentid') !== this.dragArmedSectionId) return false
+
+        this.updateDropIndicator(related, Boolean(evt.willInsertAfter))
+        return true
+      },
+      onEnd: async (evt) => {
+        this.dragJustEndedAt = Date.now()
+        const hasPositionChanged = evt.oldIndex !== evt.newIndex
+        this.clearDropIndicator()
+        this.setDragSessionClass(false)
+        this.isDragSessionActive = false
+
+        if (hasPositionChanged) {
+          await this.syncComponentOrderFromDOM()
+        }
+
+        this.clearArmedDragState()
+      },
+    })
+  }
+
+  private handleRootDoubleClick = (e: MouseEvent): void => {
+    const section = this.getSectionFromEventTarget(e.target)
+    if (!section) return
+
+    this.armSectionForDrag(section)
+  }
+
+  private handleRootPointerDown = (e: PointerEvent): void => {
+    if (e.pointerType !== 'touch') return
+
+    const section = this.getSectionFromEventTarget(e.target)
+    if (!section) return
+
+    this.clearDragTouchTimer()
+    this.dragTouchSectionCandidate = section
+    this.dragTouchStartPoint = { x: e.clientX, y: e.clientY }
+
+    this.dragTouchTimer = setTimeout(() => {
+      if (this.dragTouchSectionCandidate) {
+        this.armSectionForDrag(this.dragTouchSectionCandidate)
+      }
+      this.clearDragTouchTimer()
+    }, 350)
+  }
+
+  private handleRootPointerMove = (e: PointerEvent): void => {
+    if (e.pointerType !== 'touch' || !this.dragTouchStartPoint) return
+
+    const movedX = Math.abs(e.clientX - this.dragTouchStartPoint.x)
+    const movedY = Math.abs(e.clientY - this.dragTouchStartPoint.y)
+    if (movedX > 8 || movedY > 8) {
+      this.clearDragTouchTimer()
+    }
+  }
+
+  private handleRootPointerEnd = (): void => {
+    this.clearDragTouchTimer()
+  }
+
+  private handleGlobalKeyDown = (e: KeyboardEvent): void => {
+    if (e.key === 'Escape') {
+      this.clearArmedDragState()
+    }
+  }
+
+  private handleGlobalPointerDown = (e: PointerEvent): void => {
+    if (!this.dragArmedSectionId || this.isDragSessionActive) return
+    const armedItem = this.getSortableItemByComponentId(this.dragArmedSectionId)
+    if (!armedItem) {
+      this.clearArmedDragState()
+      return
+    }
+
+    if (!(e.target instanceof Node) || !armedItem.contains(e.target)) {
+      this.clearArmedDragState()
+    }
+  }
+
+  private handleWindowBlur = (): void => {
+    this.clearArmedDragState()
+  }
+
+  private attachSectionDragListeners(pagebuilder: HTMLElement): void {
+    if (this.hasAttachedDragListeners) return
+
+    pagebuilder.addEventListener('dblclick', this.handleRootDoubleClick)
+    pagebuilder.addEventListener('pointerdown', this.handleRootPointerDown)
+    pagebuilder.addEventListener('pointermove', this.handleRootPointerMove)
+    pagebuilder.addEventListener('pointerup', this.handleRootPointerEnd)
+    pagebuilder.addEventListener('pointercancel', this.handleRootPointerEnd)
+
+    document.addEventListener('keydown', this.handleGlobalKeyDown)
+    document.addEventListener('pointerdown', this.handleGlobalPointerDown, true)
+    window.addEventListener('blur', this.handleWindowBlur)
+
+    this.hasAttachedDragListeners = true
+  }
+
   /**
    * Attaches click, mouseover, and mouseleave event listeners to all editable elements in the page builder.
    * @private
@@ -980,6 +1250,9 @@ export class PageBuilderService {
   private addListenersToEditableElements = async () => {
     const pagebuilder = document.querySelector('#pagebuilder')
     if (!pagebuilder) return
+
+    this.initializeSectionSortable(pagebuilder as HTMLElement)
+    this.attachSectionDragListeners(pagebuilder as HTMLElement)
 
     // Wait for the next DOM update cycle to ensure all elements are rendered.
     await nextTick()
@@ -1025,6 +1298,10 @@ export class PageBuilderService {
    * @private
    */
   private handleElementClick = async (e: Event, element: HTMLElement): Promise<void> => {
+    if (this.isDragSessionActive || Date.now() - this.dragJustEndedAt < 250) {
+      return
+    }
+
     e.preventDefault()
     e.stopPropagation()
 
@@ -1044,6 +1321,13 @@ export class PageBuilderService {
     element.setAttribute('selected', '')
 
     this.pageBuilderStateStore.setElement(element)
+
+    // Keep drag UX friction low: once a user selects content in a section,
+    // arm that section so it can be dragged right away.
+    const parentSection = element.closest('section[data-componentid]')
+    if (parentSection instanceof HTMLElement) {
+      this.armSectionForDrag(parentSection)
+    }
 
     await this.handleAutoSave()
   }
@@ -1504,6 +1788,7 @@ export class PageBuilderService {
    * @private
    */
   private deleteAllComponentsFromDOM() {
+    this.clearArmedDragState()
     // Clear the store
     this.pageBuilderStateStore.setComponents([])
 

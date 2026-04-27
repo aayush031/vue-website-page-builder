@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, computed, ref, watch, provide } from 'vue'
+import { onMounted, computed, ref, watch, provide, nextTick } from 'vue'
 import ModalBuilder from '../Components/Modals/ModalBuilder.vue'
 import Preview from './Preview.vue'
 import ComponentTopMenu from '../Components/PageBuilder/EditorMenu/Editables/ComponentTopMenu.vue'
@@ -15,6 +15,7 @@ import GlobalLoader from '../Components/Loaders/GlobalLoader.vue'
 import { useTranslations } from '../composables/useTranslations'
 import { getPageBuilder } from '../composables/builderInstance'
 import UndoRedo from '../Components/PageBuilder/UndoRedo/UndoRedo.vue'
+import { retranslateAllBlocks } from '../composables/useBlockTranslation'
 
 const pageBuilderService = getPageBuilder()
 
@@ -128,6 +129,9 @@ watch(languageSelction, async (newVal) => {
     isLoadingLang.value = true
     await delay(200)
     await loadTranslations(newVal)
+    await nextTick()
+    retranslateAllBlocks(translate)
+    pageBuilderService.syncDomToStoreOnly()
     pageBuilderService.changeLanguage(newVal)
 
     // Ensure lang is updated within userSettings
@@ -513,6 +517,9 @@ onMounted(async () => {
   }
 
   await loadTranslations(languageSelction.value)
+  await nextTick()
+  retranslateAllBlocks(translate)
+  pageBuilderService.syncDomToStoreOnly()
   isInitializingLang = false
 
   updatePanelPosition()
@@ -1074,6 +1081,9 @@ onMounted(async () => {
           <template v-for="(component, idx) in getComponents" :key="component.id">
             <div
               v-if="component.html_code"
+              data-sortable-item="true"
+              :data-componentid="component.id"
+              class="pbx-sortable-item"
               v-html="component.html_code"
               @mouseup="handleSelectComponent(component)"
             ></div>
@@ -1309,6 +1319,48 @@ onMounted(async () => {
 
 .sortable-ghost > * {
   width: 100%;
+}
+
+#pagebuilder .pbx-sortable-item[data-drag-armed='true'] {
+  outline: #2563eb dashed 3px !important;
+  outline-offset: -4px !important;
+  position: relative;
+}
+
+#pagebuilder.pbx-drag-session-active {
+  user-select: none;
+}
+
+#pagebuilder .pbx-sortable-item[data-drag-armed='true']::after {
+  content: 'Double-click to drag';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 30;
+  background: #2563eb;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+#pagebuilder .pbx-sortable-ghost {
+  opacity: 0.35;
+}
+
+#pagebuilder .pbx-sortable-chosen {
+  outline: #2563eb solid 2px !important;
+  outline-offset: -2px !important;
+}
+
+#pagebuilder .pbx-sortable-item[data-drag-insert='before'] {
+  box-shadow: inset 0 3px 0 0 #2563eb;
+}
+
+#pagebuilder .pbx-sortable-item[data-drag-insert='after'] {
+  box-shadow: inset 0 -3px 0 0 #2563eb;
 }
 
 /* CSS for content inside page builder # start */

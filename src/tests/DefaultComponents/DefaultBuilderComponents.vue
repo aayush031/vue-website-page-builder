@@ -7,6 +7,7 @@ import { usePageBuilderModal } from '../../composables/usePageBuilderModal'
 import type { ComponentObject } from '../../types'
 import { getPageBuilder } from '../../composables/builderInstance'
 import { useTranslations } from '../../composables/useTranslations'
+import { translateHtmlWithRegistry } from '../../composables/useBlockTranslation'
 
 const { translate } = useTranslations()
 
@@ -61,15 +62,9 @@ const { closeAddComponentModal } = usePageBuilderModal()
 const handleDropTheme = async function (themeHtml: string) {
   isLoading.value = true
 
-  // Translate all occurrences of hardcoded strings in the theme HTML
-  const translatedThemeHtml = themeHtml
-    .replace(/Layouts and visual\./g, translate('Layouts and visual.'))
-    .replace(
-      /Start customizing by editing this default text directly in the editor\./g,
-      translate('Start customizing by editing this default text directly in the editor.'),
-    )
+  const stampedThemeHtml = translateHtmlWithRegistry(themeHtml, translate)
 
-  await pageBuilderService.addTheme(translatedThemeHtml)
+  await pageBuilderService.addTheme(stampedThemeHtml)
   closeAddComponentModal()
   isLoading.value = false
 }
@@ -77,18 +72,12 @@ const handleDropTheme = async function (themeHtml: string) {
 // Super simple component addition with professional modal closing!
 const handleDropComponent = async function (componentObject: ComponentObject) {
   isLoading.value = true
-  // Translate all occurrences of the hardcoded strings in the html_code
-  const translatedHtmlCode = componentObject.html_code
-    .replace(/Layouts and visual\./g, translate('Layouts and visual.'))
-    .replace(
-      /Start customizing by editing this default text directly in the editor\./g,
-      translate('Start customizing by editing this default text directly in the editor.'),
-    )
+  const stampedHtmlCode = translateHtmlWithRegistry(componentObject.html_code, translate)
 
   // Create a new component object with the translated html_code and title
   const translatedComponentObject = {
     ...componentObject,
-    html_code: translatedHtmlCode,
+    html_code: stampedHtmlCode,
     title: componentObject.title,
   }
 
