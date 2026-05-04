@@ -1327,8 +1327,16 @@ onMounted(async () => {
   position: relative;
 }
 
+#pagebuilder .pbx-sortable-item {
+  width: 100%;
+}
+
 #pagebuilder.pbx-drag-session-active {
   user-select: none;
+}
+
+#pagebuilder.pbx-drag-session-active #nolocalstorage {
+  pointer-events: none;
 }
 
 #pagebuilder .pbx-sortable-item[data-drag-armed='true']::after {

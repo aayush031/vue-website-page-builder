@@ -1111,16 +1111,21 @@ export class PageBuilderService {
 
   private initializeSectionSortable(pagebuilder: HTMLElement): void {
     if (this.sortableInstance) return
+    const scrollContainer =
+      (document.querySelector('#page-builder-wrapper') as HTMLElement | null) || pagebuilder
 
     this.sortableInstance = Sortable.create(pagebuilder, {
       draggable: 'div[data-sortable-item="true"]',
+      filter: '#nolocalstorage',
+      preventOnFilter: false,
       animation: 180,
       disabled: true,
       delayOnTouchOnly: true,
       delay: 220,
       touchStartThreshold: 6,
-      scroll: true,
+      scroll: scrollContainer,
       bubbleScroll: true,
+      fallbackOnBody: true,
       forceAutoScrollFallback: true,
       scrollSensitivity: 120,
       scrollSpeed: 18,
