@@ -51,7 +51,8 @@ const component: Components[] = [
       <rect fill="#718096" x="126" y="13" width="22" height="4"/>
       <rect fill="#718096" x="154" y="13" width="22" height="4"/>
       <rect fill="#394152" x="195" y="11" width="38" height="8"/>
-      <rect fill="#394152" x="238" y="11" width="44" height="8"/>
+      <rect fill="#394152" x="238" y="11" width="44" height="8"/>  
+      
     </svg>
   `,
         },
